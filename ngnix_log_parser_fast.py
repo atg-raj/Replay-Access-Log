@@ -38,15 +38,17 @@ def get_All_Attributes(log_data, log_file):
 	columns = ['host','port','user','time','request','request_type','url','http_version','status','size','referrer','useragent','epoch_time']
 	full_data = []
 	portn = 3000
+	i=1
 	Dict = {}
 	for data in log_data:
 		request = data['request']
 		k = request.split()
-		if len(k) > 1:
+		#print(len(k))
+		if len(k) > 0:
 			data['request_type'] = k[0] 
-		if len(k) > 2:
+		if len(k) > 1:
 			data['url'] = k[1]
-		if len(k) > 3:
+		if len(k) > 2:
 			data['http_version'] = k[2]
 		s = data['time']
 		# ss=data['host'].replace('.','')
@@ -63,7 +65,12 @@ def get_All_Attributes(log_data, log_file):
 		epoch = datetime.strptime(s[:20], '%d/%b/%Y:%H:%M:%S') + timedelta(hours=int(s[21:23]), minutes=int(s[24:])) * (-1 if s[20] == '+' else 1) 
 		epoch = epoch.strftime('%s')
 		epoch = int(epoch)
-		data['epoch_time']=epoch
+		
+		if i==1:
+			ii=epoch
+			i=i+1
+
+		data['epoch_time']=epoch-ii
 		full_data.append(data)
 
 	web_access_log_df = pd.DataFrame(full_data)
